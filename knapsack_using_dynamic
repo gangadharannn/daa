@@ -1,0 +1,40 @@
+def knapsack(W, wt, val, n):
+    if n == 0 or W == 0:
+        return 0, [[0 for _ in range(W+1)] for _ in range(n)]
+
+    # Create a matrix to store the inclusion of items in the knapsack
+    K = [[0 for _ in range(W+1)] for _ in range(n+1)]
+
+    for i in range(n+1):
+        for w in range(W+1):
+            if i == 0 or w == 0:
+                K[i][w] = 0
+            elif wt[i-1] <= w:
+                K[i][w] = max(val[i-1] + K[i-1][w-wt[i-1]], K[i-1][w])
+            else:
+                K[i][w] = K[i-1][w]
+
+    # Backtrack to find the items included in the knapsack
+    included = [0] * n
+    i, j = n, W
+    while i > 0 and j > 0:
+        if K[i][j] != K[i-1][j]:
+            included[i-1] = 1
+            j -= wt[i-1]
+        i -= 1
+
+    return K[n][W], included
+
+if __name__ == '__main__':
+    n = int(input("Enter the number of items: "))
+    profit = []
+    weight = []
+    for i in range(n):
+        val = int(input(f"Enter profit of item {i+1}: "))
+        wt = int(input(f"Enter weight of item {i+1}: "))
+        profit.append(val)
+        weight.append(wt)
+    W = int(input("Enter the capacity of the knapsack: "))
+    max_value, included_items = knapsack(W, weight, profit, n)
+    print("The maximum value is:", max_value)
+    print("Included items:", included_items)
