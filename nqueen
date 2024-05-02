@@ -1,0 +1,40 @@
+currentSolution = []  # will hold current testing data found solutions
+solutions = []
+
+def findSafe(testRow, testCol):
+    # No need to check for row 0
+    if testRow == 0:
+        return True
+
+    for row in range(testRow):
+        # Check vertical
+        if testCol == currentSolution[row]:
+            return False
+
+        # Check diagonal
+        if abs(testRow - row) == abs(testCol - currentSolution[row]):
+            return False
+
+    # No attack found
+    return True
+
+def placeQueen(row):
+    global currentSolution, solutions, numQueens
+    for col in range(numQueens):
+        if findSafe(row, col):
+            currentSolution[row] = col
+            if row == numQueens - 1:
+                solutions.append(currentSolution.copy())
+                print("Solution number:", len(solutions), currentSolution)
+            else:
+                placeQueen(row + 1)
+
+numQueens = 4  # Change this to the desired number of queens
+currentSolution = [-1] * numQueens
+
+print("Solving for", numQueens, "queens...")
+placeQueen(0)
+
+print(len(solutions), "solutions found")
+for solution in solutions:
+    print(solution)
